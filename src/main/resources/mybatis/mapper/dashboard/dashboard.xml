@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.cachedemo.infrastructure.persistence.mybatis.MybatisDashboardRepository">
+    <select id="fetchDashboard" resultType="com.example.cachedemo.domain.dashboard.model.Dashboard">
+        select
+            dimension1, dimension2, dimension3, dimension4, dimension5,
+            dimension6,
+            count(*) as total_records,
+            avg(measure1) as measure1,
+            avg(measure1) as measure2,
+            avg(measure1) as measure3,
+            avg(measure1) as measure4,
+            avg(measure5) as measure5,
+            avg(measure6) as measure6,
+            avg(measure7) as measure7
+        from dashboard_data
+        group by
+            dimension1, dimension2, dimension3, dimension4, dimension5,
+            dimension6
+        order by total_records desc
+            limit 100;
+    </select>
+
+    <update id="updateDashboard">
+        UPDATE dashboard_data
+        SET
+          measure1 = measure1 + 10000,
+          measure2 = measure2 + 10000,
+          measure3 = measure3 + 10000,
+          measure4 = measure4 + 10000,
+          measure5 = measure5 + 10000
+--           measure6 = measure6 + 10000,
+--           measure7 = measure7 + 10000
+    </update>
+</mapper>

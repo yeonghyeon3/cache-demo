@@ -1,0 +1,47 @@
+version: "3.8"
+services:
+  app:
+    # Java 애플리케이션 (Gradle 빌드 → JDK 17 런타임)
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8443:8443"
+    depends_on:
+      - mysql
+      - redis
+
+  redis:
+    # Redis 컨테이너 (커스텀 redis.conf 파일 사용 가능)
+    build:
+      context: ./redis
+      dockerfile: Dockerfile
+    ports:
+      - "6379:6379"
+    volumes:
+    # 필요 시 redis.conf 또는 데이터 볼륨을 마운트할 수 있습니다.
+    # - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+    # - redis-data:/data
+
+  mysql:
+    # MySQL 컨테이너 (초기화 스크립트 포함)
+    build:
+      context: ./mysql
+      dockerfile: Dockerfile
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: dashboard
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    volumes:
+      # 데이터 지속성을 위해 볼륨을 사용할 수 있습니다.
+      - mysql-data:/var/lib/mysql
+
+volumes:
+  mysql-data:
+    # mysql 데이터를 저장할 볼륨
+    driver: local
+  # redis-data:
+  #   driver: local
