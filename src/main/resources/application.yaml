@@ -1,26 +1,12 @@
-server:
-  port: 8080
 
 spring:
-  cache:
-#    type: caffeine
-    type: redis
-  caffeine:
-    spec: maximumSize=500,expireAfterWrite=600s,recordStats
-  data:
-    redis:
-      host: localhost  # 또는 도커/compose 환경에서는 'redis'
-      port: 6379
-      timeout: 6000
-
-  datasource:
-    url: jdbc:mysql://localhost:3306/dashboard?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-    username: ${MYSQL_USERNAME:root}
-    password: ${MYSQL_PASSWORD:k71110373}
-    driver-class-name: com.mysql.cj.jdbc.Driver
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+  profiles:
+    default: local
 
 mybatis:
-  mapper-locations: mybatis/mapper/**/*.xml
+  mapper-locations: classpath:mybatis/mapper/**/*.xml
   type-aliases-package: com.example.project.model
   configuration:
     map-underscore-to-camel-case: true

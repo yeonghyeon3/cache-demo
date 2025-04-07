@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+
+
+
+
+
+
+<mapper namespace="com.example.cachedemo.infrastructure.persistence.mybatis.MybatisMysqlCacheRepository">
+    <!-- 결과 매퍼 정의: cache_value 컬럼의 값을 byte[]로 읽어 생성자 인자인 data에 매핑 -->
+    <resultMap id="MysqlCacheValue" type="com.example.cachedemo.domain.mysqlcache.model.MysqlCacheValue">
+        <constructor>
+            <idArg column="cache_value" javaType="[B"/>
+        </constructor>
+    </resultMap>
+
+    <!--        // Cache Value 가져오기-->
+    <!--        public MysqlCacheValue selectCacheValue(String name, String key);-->
+    <select id="selectCacheValue" resultMap="MysqlCacheValue">
+        SELECT cache_value
+        FROM cache_entries
+        WHERE cache_name = #{name}
+        AND cache_key = #{key}
+    </select>
+
+    <!--        // Cache value 등록하기-->
+    <!--        public void insertCacheValue(String name, String key, byte[] value);-->
+    <insert id="insertCacheValue">
+        INSERT INTO cache_entries (cache_name, cache_key, cache_value)
+            VALUES (
+                #{name}
+                ,#{key}
+                ,#{value}
+           )
+    </insert>
+
+    <!--        // Cache name으로 모든 Entry 찾기-->
+    <!--        public Map<String, Object> selectCacheEntries(String name);-->
+    <select id="selectCacheEntries" resultType="Map">
+        SELECT
+            cache_name
+            ,cache_key
+        FROM cache_entries
+        WHERE cache_name = #{name}
+    </select>
+
+    <!--        // Cache name으로 모든 Entry 삭제-->
+    <!--        public void deleteCacheEntries(String name);-->
+    <delete id="deleteCacheEntries">
+        DELETE FROM cache_entries
+        WHERE cache_name = #{name}
+    </delete>
+
+    <!--    // 모든 Cache 삭제-->
+    <!--    public void deleteCacheAllEntries();-->
+    <delete id="deleteCacheAllEntries">
+        DELETE FROM cache_entries
+        WHERE 1 = 1
+    </delete>
+
+    <!--        // key에 해당하는 캐시 삭제-->
+    <!--        void deleteCacheValue(String name, String key);-->
+    <delete id="deleteCacheValue">
+        DELETE FROM cache_entries
+        WHERE cache_name = #{name}
+        AND cache_key = #{key}
+    </delete>
+
+    <!--        // Cache name의 Entry 크기 조회-->
+    <!--        int selectCacheEntriesCount(String name);-->
+    <select id="selectCacheEntriesCount" resultType="int">
+        SELECT COUNT(*)
+        FROM cache_entries
+    </select>
+</mapper>

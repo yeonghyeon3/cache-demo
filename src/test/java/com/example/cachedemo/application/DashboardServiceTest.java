@@ -43,8 +43,10 @@ public class DashboardServiceTest {
 
         // DashboardService는 dashboardRepository 빈을 주입받아 생성
         @Bean
-        public DashboardService dashboardService(DashboardRepository dashboardRepository) {
-            return new DashboardService(dashboardRepository);
+        public DashboardService dashboardService(
+                DashboardRepository dashboardRepository,
+                CacheManager cacheManager) {
+            return new DashboardService(dashboardRepository, cacheManager);
         }
     }
 
@@ -70,5 +72,4 @@ public class DashboardServiceTest {
         assertEquals(expectedDashboard, result2, "Second call should return expected Dashboard");
         verify(dashboardRepository, times(1)).fetchDashboard(request);
     }
-
 }

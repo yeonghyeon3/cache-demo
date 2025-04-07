@@ -1,7 +1,18 @@
 -- init.sql
+use dashboard;
 
 -- 기존 테이블이 있으면 삭제 (테스트용)
-DROP TABLE IF EXISTS dashboard_data;
+# DROP TABLE IF EXISTS cache_entries;
+CREATE TABLE cache_entries (
+       cache_name VARCHAR(64) NOT NULL,
+       cache_key VARCHAR(1024) NOT NULL,
+       cache_value BLOB NOT NULL,
+       last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+       PRIMARY KEY (cache_name, cache_key(255))
+);
+
+-- 기존 테이블이 있으면 삭제 (테스트용)
+# DROP TABLE IF EXISTS dashboard_data;
 
 -- 대시보드 데이터 테이블 생성 (10개 필터 컬럼 + 7개 measure 컬럼)
 CREATE TABLE dashboard_data (

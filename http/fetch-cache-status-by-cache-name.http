@@ -1,1 +1,1 @@
-GET localhost:8080/cache/stats/dashboardData
+GET localhost:8081/cache/stats/dashboardData

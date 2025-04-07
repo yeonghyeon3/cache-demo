@@ -1,0 +1,26 @@
+spring:
+  config:
+    activate:
+      on-profile: test
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # 테스트 시 @DynamicPropertySource로 덮어씌워짐
+    url: jdbc:mysql://localhost:3306/testdb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: testuser
+    password: testpass
+  # 테스트 환경에서는 H2 메모리 데이터베이스 사용
+#  datasource:
+#    driver-class-name: org.h2.Driver
+#    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+#    username: sa
+#    password:
+
+  # H2 콘솔은 테스트에서도 활성화
+#  h2:
+#    console:
+#      enabled: true
+#      path: /h2-console
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql

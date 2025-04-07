@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  mysql:
+    build: ./docker/mysql/.
+    container_name: cachedemo_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: k71110373
+    ports:
+      - "3306:3306"
+    volumes:
+      # 데이터 베이스 초기화(init.sql)
+      - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  app1:
+    build: .
+    container_name: cachedemo_app1
+    environment:
+      # 데이터소스 설정: mysql 서비스 이름을 호스트로 사용 (docker network 내에서는 컨테이너 이름으로 접속 가능)
+      DATASOURCE_URL: jdbc:mysql://cachedemo_mysql:3306/dashboard?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      DATASOURCE_USERNAME: root
+      DATASOURCE_PASSWORD: k71110373
+      PROFILES_ACTIVE: docker
+    depends_on:
+      mysql:
+        condition: service_healthy
+    ports:
+      - "8081:8080"
+
+  app2:
+    build: .
+    container_name: cachedemo_app2
+    environment:
+      DATASOURCE_URL: jdbc:mysql://cachedemo_mysql:3306/dashboard?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      DATASOURCE_USERNAME: root
+      DATASOURCE_PASSWORD: k71110373
+      PROFILES_ACTIVE: docker
+    depends_on:
+      mysql:
+        condition: service_healthy
+    ports:
+      - "8082:8080"
+
+  nginx:
+    image: nginx:alpine
+    container_name: cachedemo_nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - app1
+      - app2
+    volumes:
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+
+volumes:
+  mysql-data:

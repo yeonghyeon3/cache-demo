@@ -17,36 +17,36 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DashboardService {
 
-    private final DashboardRepository mybatisDashboardRepository;
+    private final DashboardRepository dashboardRepository;
     private final CacheManager cacheManager;
     @Transactional(readOnly = true)
     public List<Dashboard> fetchDashboardWithoutCache(FetchDashboardRequest request) {
 
-        return mybatisDashboardRepository.fetchDashboard(request);
+        return dashboardRepository.fetchDashboard(request);
     }
 
     @Cacheable(value = "dashboardData", key = "#request.toString()")
     @Transactional(readOnly = true)
     public List<Dashboard> fetchDashboardWithCache(FetchDashboardRequest request) {
 
-        return mybatisDashboardRepository.fetchDashboard(request);
+        return dashboardRepository.fetchDashboard(request);
     }
 
     @Transactional
     public void updateDashboardWithoutCacheEvict() {
-        mybatisDashboardRepository.updateDashboard();
+        dashboardRepository.updateDashboard();
     }
 
     @Transactional
     @CacheEvict(value = "dashboardData", allEntries = true)
     public void updateDashboardWithCacheEvict() {
-        mybatisDashboardRepository.updateDashboard();
+        dashboardRepository.updateDashboard();
     }
 
     @Transactional
     public void updateDashboardWithCacheUpdate() {
         // 내부 데이터 변경
-        mybatisDashboardRepository.updateDashboard();
+        dashboardRepository.updateDashboard();
 
         FetchDashboardRequest request = new FetchDashboardRequest();
 
@@ -56,7 +56,7 @@ public class DashboardService {
         }
 
         // 최신 데이터 조회 후 캐시에 직접 저장
-        List<Dashboard> newData = mybatisDashboardRepository.fetchDashboard(request);
+        List<Dashboard> newData = dashboardRepository.fetchDashboard(request);
         if (cache != null) {
             cache.put(request.toString(), newData);
         }

@@ -1,2 +1,2 @@
-GET localhost:8080/dashboard/fetch-without-cache?dimension1=AlphaDimension
+GET localhost:8081/dashboard/fetch-without-cache
 Accept: application/json

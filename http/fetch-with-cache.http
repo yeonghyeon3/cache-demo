@@ -1,2 +1,2 @@
-GET localhost:8080/dashboard/fetch-with-cache
+GET localhost:8082/dashboard/fetch-with-cache
 Accept: application/json
